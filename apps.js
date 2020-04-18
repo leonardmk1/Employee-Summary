@@ -54,6 +54,28 @@ const employeeQuestions = [
     name: "email",
     message: "Enter Employee Email:",
   },
+  {
+    type: "list",
+    name: "role",
+    message: "What is the Employee Role?",
+    choices: ["Engineer", "Intern"],
+  },
+  {
+    when: (input) => {
+      return input.role == "Engineer";
+    },
+    type: "input",
+    name: "github",
+    message: "Engineer enter your GitHub username:",
+  },
+  {
+    when: (input) => {
+      return input.role == "Intern";
+    },
+    type: "input",
+    name: "school",
+    message: "Intern enter your School Name:",
+  },
 ];
 
 // Write code to use inquirer to gather information about the development team members,
