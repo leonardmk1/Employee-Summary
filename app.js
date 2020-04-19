@@ -11,7 +11,7 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-
+const teamMembers = [];
 const managerQuestions = [
   {
     type: "input",
@@ -79,19 +79,42 @@ const employeeQuestions = [
   },
 ];
 const createEmployee = function () {
-  inquirer.prompt(employeeQuestions).then(function (answers) {
+  inquirer.prompt(employeeQuestions).then(function(answers) {
+    if (answers.role === "Engineer") {
+      const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+      teamMembers.push(engineer);
+    } else {
+      const intern = new Intern(answers.name, answers.id, answers.email, answers.school)
+      teamMembers.push(intern);
+
+    }
     employeesCreated++;
     if (employeesCreated < totalEmployees) {
       createEmployee();
+    } else {
+      const html = render(teamMembers);
+      fs.writeFile(outputPath, html, function(err){
+        if (err) {
+          throw err;
+        }
+      })
     }
   });
 };
 inquirer.prompt(managerQuestions).then(function (answers) {
+  const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+  teamMembers.push(manager);
   totalEmployees = answers.team;
   if(totalEmployees){
     createEmployee();
-  }
-});
+  } else {
+    const html = render(teamMembers);
+    fs.writeFile(outputPath, html, function(err){
+      if (err) {
+        throw err;
+      }
+    })
+  }});
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
